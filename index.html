@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Xpedition Presents: The Traitor</title>
+<title>The Traitor Simulator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
@@ -57,6 +57,9 @@ body { margin: 0; background: radial-gradient(1000px 600px at 30% 0%, #3d0009 0%
 .cell.btm { background: var(--tr-btm); color: #000; }
 .cell.elim { background: var(--tr-elim); color: #000; }
 .cell.murd { background: var(--tr-murd-bg); color: var(--tr-murd-txt); }
+.cell.disq { background: #500000; color: #fff; }
+.cell.evac { background: #DA70D6; color: #000; }
+.cell.quit { background: #800000; color: #fff; }
 .cell.champ { background: #ffd700; color: #000; }
 .cell.run { background: #c0c0c0; color: #000; }
 .cell.grey { background: var(--tr-empty); color: transparent; }
@@ -90,18 +93,26 @@ body { margin: 0; background: radial-gradient(1000px 600px at 30% 0%, #3d0009 0%
 
 <main>
   <section class="wrap glass stage active" id="stage-1">
-    <span class="help">Elige a los 20 participantes de la temporada.</span>
+   <span class="help">Elige la cantidad de participantes:</span>
+<select id="castCountSelect" class="btn" style="margin-bottom:10px;">
+    <option value="12">12</option><option value="14">14</option>
+    <option value="16" selected>16</option><option value="18">18</option>
+    <option value="20">20</option><option value="22">22</option><option value="24">24</option>
+    <option value="26">26</option>
+    <option value="28">28</option>
+    <option value="30">30</option>
+</select>
     <div class="grid" id="castGrid"></div>
     <div class="control-bar">
-      <span class="help" id="castCountHelp" style="margin:0; margin-right:auto;">0/20 seleccionados</span>
-      <button class="btn" id="randomCast">Random Cast</button>
-      <button class="btn primary" id="btnToTraitors" disabled>Continuar →</button>
-    </div>
+  <span class="help" id="castCountHelp" style="margin:0; margin-right:auto;">0/16 seleccionados</span>
+  <button class="btn" id="randomCast">Random Cast</button>
+  <button class="btn primary" id="btnToTraitors" disabled>Continuar →</button>
+</div>
   </section>
 
   <section class="wrap glass stage" id="stage-2">
-    <h2 class="gold-emboss" style="text-align:center; margin-top:0;">Elección de Traidores</h2>
-    <span class="help" style="text-align:center;">En un cast de 20, los concursantes son referidos como los "Inocentes", y entre ellos están los "Traidores", un grupo seleccionado en secreto por la anfitriona, Bonju.</span>
+<h2 class="gold-emboss" style="text-align:center; margin-top:0;">Elección de Traidores</h2>
+<span id="castDescText" class="help" style="text-align:center;">En un cast de 16, los concursantes son referidos como los "Inocentes", y entre ellos están los "Traidores", un grupo seleccionado en secreto por la anfitriona, Bonju.</span>
     <span class="help" style="text-align:center; margin-bottom:16px;">Selecciona 3 Traidores o deja que el azar lo decida.</span>
     
     <div class="grid" id="traitorsGrid"></div>
@@ -253,7 +264,7 @@ const gText = (name, textM, textF) => getGender(name) === "F" ? textF : textM;
 
 // Data
 const ALL_PARTICIPANTS = [
- "Dios", "Adriana Pereira", "Alexandro", "Alexia", "Alice", "Amanda Lewis", "Anderson Moreno", "Andromeda", "Ari Salgado", "Atneimip", "Azael", "Azealia Midnight", "Bayron", "Beto", "Brave", "Bruno Macri", "Bryan Montalvo", "Carlos Harrington", "Catalina", "Christopher", "Cocomong", "Coronel", "Daelly", "Daphne Blake", "Dani", "Dios", "Doppel", "Dua Lingo", "Eduard", "Eduardo", "Edna Droga", "Elian", "Elvin", "Emanuel", "Emmy Mango", "Eris Midnight", "Esteban", "Felix", "Gabriel Sab", "Garnet", "Gokuh Moreno", "Greg", "Ian Esteban", "Ignacio Ricci", "Isabel", "Ivan Serrano", "Ivy", "Iñaella Rose", "Julián", "Katy", "Kim Camila", "Lalamila", "Leandro", "Luis", "Lola Mugler", "Lucas Mendez", "Luciano", "Marcos", "Marianito", "Mary Hao", "Mati", "Nahuee", "Nicki Gorilaj", "Nidia Mirella", "Ocean Harmony", "Oscar", "Pablo", "Paula Garcia", "Paulis Queen", "Peggy", "Pepi", "Pier", "Plastique Doll", "Rafael", "Renata", "Renzo", "Robin", "Samuel Gamert", "Sandro", "Silvanya D'Lemberth", "Sophia Asdero", "Sophie Bradley", "Stalin Mango", "Vita", "Vitany Glambert", "Ximena", "Xina Ro"
+ "Dios", "Adriana Pereira", "Alexandro", "Alexia", "Alice", "Amanda Lewis", "Anderson Moreno", "Andromeda", "Ari Salgado", "Atneimip", "Azael", "Azealia Midnight", "Bayron", "Beto", "Brave", "Bruno Macri", "Bryan Montalvo", "Carlos Harrington", "Catalina", "Christopher", "Cocomong", "Coronel", "Daelly", "Daphne Blake", "Dani", "Doppel", "Dua Lingo", "Eduard", "Eduardo", "Edna Droga", "Elian", "Elvin", "Emanuel", "Emmy Mango", "Eris Midnight", "Esteban", "Felix", "Gabriel Sab", "Garnet", "Gokuh Moreno", "Greg", "Ian Esteban", "Ignacio Ricci", "Isabel", "Ivan Serrano", "Ivy", "Iñaella Rose", "Julián", "Katy", "Kim Camila", "Lalamila", "Leandro", "Luis", "Lola Mugler", "Lucas Mendez", "Luciano", "Marcos", "Marianito", "Mary Hao", "Mati", "Nahuee", "Nicki Gorilaj", "Nidia Mirella", "Ocean Harmony", "Oscar", "Pablo", "Paula Garcia", "Paulis Queen", "Peggy", "Pepi", "Pier", "Plastique Doll", "Rafael", "Renata", "Renzo", "Robin", "Samuel Gamert", "Sandro", "Silvanya D'Lemberth", "Sophia Asdero", "Sophie Bradley", "Stalin Mango", "Vita", "Vitany Glambert", "Ximena", "Xina Ro"
 ];
 
 // Función Helper para el Rol textualmente correcto
@@ -385,6 +396,30 @@ function loadImg(el, candidates) {
  next();
 }
 
+function checkSpecialEvent(targetName) {
+  if (specialEventUsed) return null;
+
+
+  if (!chaosMode) return null;
+
+  // SOLO episodios 2-5
+  if (episode < 2 || episode > 5) return null;
+
+  const roll = Math.random();
+
+  // probabilidad base del evento
+  if (roll < 0.90) {
+    specialEventUsed = true;
+
+    const events = ["EVACUADO", "EXPULSADO", "RENUNCIA"];
+    const type = events[Math.floor(Math.random() * events.length)];
+
+    return type;
+  }
+
+  return null;
+}
+
 function chip(name, txt="") {
  const span = document.createElement("span"); span.className = "pill";
  const img = document.createElement("img"); img.alt = name; loadImg(img, imgFor(name));
@@ -416,20 +451,26 @@ function checkAllActive(arr) {
 // State
 let step = 1;
 let cast = [];
+let castCount = 16;
 let roles = {}; 
 let wins = {};
 let alive = [];
 let elim_order = []; 
 let trackData = {}; 
 let episode = 1;
+let specialEventHappened = false;
+let chaosMode = false; 
+
 
 // Ep State
 let immune = [];
 let murdered = null;
 let eliminated = [];
 let btm_players = [];
+let btm_count = 0;
 let alliances = [];
 let isFinale = false;
+let specialEventUsed = false;
 
 // Event limiters
 let usedGroups = new Set();
@@ -442,10 +483,23 @@ function go(stageId) {
  window.scrollTo(0,0);
 }
 
+document.getElementById('castCountSelect').onchange = (e) => {
+    castCount = parseInt(e.target.value);
+    
+    // 1. Regenerar grid
+    initCastGrid();
+    
+    // 2. Actualizar texto en Stage 1
+    $("#castCountHelp").textContent = `0/${castCount} seleccionados`;
+    
+    // 3. ACTUALIZACIÓN DINÁMICA: Cambia el texto en Stage 2
+    $("#castDescText").textContent = `En un cast de ${castCount}, los concursantes son referidos como los "Inocentes", y entre ellos están los "Traidores", un grupo seleccionado en secreto por la anfitriona, Bonju.`;
+};
+
 // STAGE 1
 function initCastGrid() {
  const grid = $("#castGrid"); grid.innerHTML = "";
- for(let i=0; i<20; i++) {
+for(let i=0; i<castCount; i++) {
    const slot = document.createElement("div"); slot.className = "slot";
    const icon = document.createElement("div"); icon.className = "icon";
    const img = document.createElement("img"); img.alt = "?"; icon.appendChild(img);
@@ -463,30 +517,43 @@ function initCastGrid() {
  }
 }
 function updateCastUI() {
- const selects = Array.from(document.querySelectorAll("#castGrid select"));
- const vals = selects.map(s => s.value).filter(Boolean);
- const unique = new Set(vals);
- 
- selects.forEach(s => {
-   Array.from(s.options).forEach(o => {
-     if(!o.value) return;
-     o.disabled = unique.has(o.value) && s.value !== o.value;
-   });
- });
- 
- $("#castCountHelp").textContent = `${unique.size}/20 seleccionados`;
- $("#btnToTraitors").disabled = unique.size !== 20;
+  const selects = Array.from(document.querySelectorAll("#castGrid select"));
+  const vals = selects.map(s => s.value).filter(Boolean);
+  const unique = new Set(vals);
+  
+  selects.forEach(s => {
+    Array.from(s.options).forEach(o => {
+      if(!o.value) return;
+      o.disabled = unique.has(o.value) && s.value !== o.value;
+    });
+  });
+  
+  $("#castCountHelp").textContent = `${unique.size}/${castCount} seleccionados`;
+  $("#btnToTraitors").disabled = unique.size !== castCount;
 }
 
 $("#randomCast").onclick = () => {
- const p = shuffle(ALL_PARTICIPANTS).slice(0, 20);
- document.querySelectorAll("#castGrid select").forEach((s, i) => { s.value = p[i]; s.dispatchEvent(new Event("change")); });
+  const selects = Array.from(document.querySelectorAll("#castGrid select"));
+  
+  const pool = shuffle([...ALL_PARTICIPANTS]);
+  
+  if (pool.length < selects.length) {
+    return toast("No hay suficientes participantes.");
+  }
+
+  const chosen = pool.slice(0, selects.length);
+
+  selects.forEach((s, i) => {
+    s.value = chosen[i];
+    s.dispatchEvent(new Event("change"));
+  });
 };
 
 $("#btnToTraitors").onclick = () => {
  cast = Array.from(document.querySelectorAll("#castGrid select")).map(s => s.value);
  cast.forEach(n => { roles[n] = 'Inocente'; wins[n] = 0; trackData[n] = []; });
  alive = [...cast];
+  chaosMode = cast.length > 20;
  initTraitorsGrid();
  go("stage-2");
  $("#stepName").textContent = "Elección de Traidores";
@@ -531,7 +598,7 @@ $("#btnStartGame").onclick = () => {
 
 // STAGE 3: CHALLENGE
 function startEpisode() {
- immune = []; murdered = null; eliminated = []; alliances = []; btm_players = [];
+ immune = []; murdered = null; eliminated = []; alliances = []; btm_players = []; btm_count = 0;
  isFinale = alive.length <= 4;
  
  $("#epTitle").textContent = isFinale ? `Episodio Final` : `Episodio ${episode}`;
@@ -762,176 +829,390 @@ function areAllies(a, b) {
 }
 
 function runStandardVoting() {
- const vList = $("#votingList"); vList.innerHTML = "";
- let votes = {}; alive.forEach(p => votes[p] = 0);
- 
- let deadTraitors = elim_order.filter(e => roles[e.name] === 'Traidor' && e.reason === 'ELIM').length;
- let forceTraitor = false;
- if (episode <= 3 && deadTraitors === 0) {
-   if (episode === 3 || Math.random() < 0.35) {
-     forceTraitor = true;
-   }
- }
+  const vList = $("#votingList");
+  vList.innerHTML = "";
+  let votes = {};
+  alive.forEach(p => votes[p] = 0);
 
- let availableTargets = alive.filter(t => !immune.includes(t));
- let mainTargets = [];
+  let deadTraitors = elim_order.filter(e => roles[e.name] === 'Traidor' && e.reason === 'ELIM').length;
+  let forceTraitor = false;
 
- if (forceTraitor) {
-   let traitorTargets = availableTargets.filter(t => roles[t] === 'Traidor');
-   if (traitorTargets.length > 0) {
-     mainTargets = [traitorTargets[Math.floor(Math.random() * traitorTargets.length)]];
-   } else {
-     mainTargets = shuffle(availableTargets).slice(0, Math.min(availableTargets.length, Math.floor(Math.random() * 2) + 2));
-   }
- } else {
-   mainTargets = shuffle(availableTargets).slice(0, Math.min(availableTargets.length, Math.floor(Math.random() * 2) + 2));
- }
- 
- alive.forEach(voter => {
-   let targets = mainTargets.filter(t => t !== voter && !areAllies(voter, t));
-   if(targets.length === 0) targets = availableTargets.filter(t => t !== voter && !areAllies(voter, t)); 
-   if(targets.length === 0) targets = availableTargets.filter(t => t !== voter); 
-   if(targets.length === 0) return; 
-   
-   let target = targets[Math.floor(Math.random() * targets.length)];
-   if (forceTraitor && targets.includes(mainTargets[0])) {
-     target = mainTargets[0]; 
-   }
-   
-   votes[target]++;
-   vList.appendChild(evRow(`${chip(voter).outerHTML} <span class="txt">vota por</span> ${chip(target).outerHTML} <span class="txt">para ser ${gText(target, "eliminado", "eliminada")}.</span>`));
- });
- 
- let maxV = 0; let tie = [];
- for(let p in votes) {
-   if(votes[p] > maxV) { maxV = votes[p]; tie = [p]; }
-   else if(votes[p] === maxV) tie.push(p);
- }
- 
- let eliminated_player = tie[Math.floor(Math.random() * tie.length)];
- eliminated = [eliminated_player];
- 
- btm_players = Object.keys(votes).filter(p => votes[p] > 0 && p !== eliminated_player);
- 
- alive = alive.filter(p => p !== eliminated_player);
- elim_order.push({ name: eliminated_player, ep: episode, reason: 'ELIM' });
- 
- // AQUI LA CORRECCIÓN 1: NO HAY GANADOR
- if (alive.length === 0) {
-     $("#elimResultText").textContent = "TODOS LOS PARTICIPANTES HAN SIDO ELIMINADOS, NO HAY GANADOR";
-     $("#elimRoleText").textContent = "";
-     $("#elimResultText").style.color = "#ff4d4d";
- } else {
-     let elLa = gText(eliminated_player, "El participante", "La participante");
-     let elimText = gText(eliminated_player, "eliminado", "eliminada");
-     $("#elimResultText").textContent = `${elLa} ${eliminated_player} ha sido ${elimText}.`;
-     $("#elimRoleText").textContent = `Era... ${getRoleText(eliminated_player)}`;
-     $("#elimRoleText").style.color = roles[eliminated_player] === 'Traidor' ? '#ff4d4d' : 'var(--gold)';
- }
+  if (episode <= 3 && deadTraitors === 0) {
+    if (episode === 3 || Math.random() < 0.35) {
+      forceTraitor = true;
+    }
+  }
+
+  let availableTargets = alive.filter(t => !immune.includes(t));
+  let mainTargets = [];
+
+  if (forceTraitor) {
+    let traitorTargets = availableTargets.filter(t => roles[t] === 'Traidor');
+    if (traitorTargets.length > 0) {
+      mainTargets = [traitorTargets[Math.floor(Math.random() * traitorTargets.length)]];
+    } else {
+      mainTargets = shuffle(availableTargets).slice(0, Math.min(availableTargets.length, Math.floor(Math.random() * 2) + 2));
+    }
+  } else {
+    mainTargets = shuffle(availableTargets).slice(0, Math.min(availableTargets.length, Math.floor(Math.random() * 2) + 2));
+  }
+
+  // ================= VOTACIONES =================
+  alive.forEach(voter => {
+    let targets = mainTargets.filter(t => t !== voter && !areAllies(voter, t));
+    if (targets.length === 0) targets = availableTargets.filter(t => t !== voter && !areAllies(voter, t));
+    if (targets.length === 0) targets = availableTargets.filter(t => t !== voter);
+    if (targets.length === 0) return;
+
+    let target = targets[Math.floor(Math.random() * targets.length)];
+
+    if (forceTraitor && mainTargets.includes(target)) {
+      target = mainTargets[0];
+    }
+
+    votes[target]++;
+    vList.appendChild(
+      evRow(`${chip(voter).outerHTML} <span class="txt">vota por</span> ${chip(target).outerHTML} <span class="txt">para ser ${gText(target, "eliminado", "eliminada")}.</span>`)
+    );
+  });
+
+  // ================= RESOLUCIÓN DE VOTO =================
+  let maxV = 0;
+  let tie = [];
+
+  for (let p in votes) {
+    if (votes[p] > maxV) {
+      maxV = votes[p];
+      tie = [p];
+    } else if (votes[p] === maxV) {
+      tie.push(p);
+    }
+  }
+
+  let eliminated_player = tie[Math.floor(Math.random() * tie.length)];
+  const votedPlayers = Object.keys(votes).filter(p => votes[p] > 0);
+  btm_count = votedPlayers.length;
+
+ // ================= EVENTO ESPECIAL =================
+let specialCandidates = alive.filter(p => !immune.includes(p));
+if (specialCandidates.length === 0) specialCandidates = [...alive];
+let special_player = specialCandidates[Math.floor(Math.random() * specialCandidates.length)];
+let specialResult = checkSpecialEvent(special_player);
+
+if (specialResult) {
+
+  let g = getGender(special_player);
+
+  let narrativeText = "";
+
+  if (specialResult === "RENUNCIA") {
+    narrativeText = `${special_player} ha renunciado por motivos personales. El eliminado por votos está a salvo.`;
+  }
+
+  else if (specialResult === "EXPULSADO") {
+    narrativeText = `${special_player} ha sido ${g === "F" ? "expulsada" : "expulsado"} por romper las reglas. El eliminado por votos está a salvo.`;
+  }
+
+  else if (specialResult === "EVACUADO") {
+    narrativeText = `${special_player} ha sido ${g === "F" ? "evacuada" : "evacuado"} por heridas. El eliminado por votos está a salvo.`;
+  }
+
+  vList.appendChild(
+    evRow(`<strong style="color:var(--gold)">${narrativeText}</strong>`)
+  );
+
+  $("#elimResultText").textContent = narrativeText;
+  $("#elimResultText").style.color = "var(--gold)";
+  $("#elimRoleText").textContent = `${special_player} era ${getRoleText(special_player)}.`;
+
+  btm_players = votedPlayers.filter(p => p !== special_player);
+  alive = alive.filter(p => p !== special_player);
+
+  elim_order.push({
+    name: special_player,
+    ep: episode,
+    reason: specialResult
+  });
+
+  trackData[special_player][episode - 1] = {
+    cls: "disq",
+    txt: specialResult === "RENUNCIA" ? "QUIT"
+        : specialResult === "EVACUADO" ? "EVAC"
+        : "DISQ"
+  };
+
+  return;
+}
+
+  // ================= ELIMINACIÓN NORMAL =================
+  eliminated = [eliminated_player];
+
+  btm_players = votedPlayers.filter(p => p !== eliminated_player);
+
+  alive = alive.filter(p => p !== eliminated_player);
+
+  elim_order.push({
+    name: eliminated_player,
+    ep: episode,
+    reason: 'ELIM'
+  });
+
+  $("#elimResultText").textContent = `${eliminated_player} fue ${gText(eliminated_player, "eliminado", "eliminada")}.`;
+  $("#elimResultText").style.color = "#ff4d4d";
+  $("#elimRoleText").textContent = `${eliminated_player} era ${getRoleText(eliminated_player)}.`;
+
+}
+
+function markFinalWinners(winners) {
+  winners.forEach(name => {
+    trackData[name][episode - 1] = { cls: "champ", txt: "WINNER" };
+  });
+}
+
+function markFinalEliminated(names, reason = "ELIM") {
+  names.forEach(name => {
+    if (!elim_order.some(e => e.name === name && e.ep === episode)) {
+      elim_order.push({ name, ep: episode, reason });
+    }
+    trackData[name][episode - 1] = { cls: "elim", txt: "ELIM" };
+  });
+}
+
+function decideEndOrContinue(vList) {
+  let round = 1;
+
+  while (true) {
+    let votes = { terminar: 0, continuar: 0 };
+
+    alive.forEach((voter, index) => {
+      let choice = Math.random() < 0.5 ? "terminar" : "continuar";
+
+      if (round > 1 && index === alive.length - 1) {
+        const terminarAhead = votes.terminar > votes.continuar;
+        const continuarAhead = votes.continuar > votes.terminar;
+        const wouldTie = (terminarAhead && choice === "continuar") || (continuarAhead && choice === "terminar");
+        if (wouldTie) choice = terminarAhead ? "terminar" : "continuar";
+      }
+
+      votes[choice]++;
+      vList.appendChild(
+        evRow(`${chip(voter).outerHTML} <span class="txt">vota por</span> <strong style="color:var(--gold)">${choice.toUpperCase()}</strong><span class="txt">.</span>`)
+      );
+    });
+
+    if (votes.terminar !== votes.continuar) {
+      return votes.terminar > votes.continuar ? "terminar" : "continuar";
+    }
+
+    vList.appendChild(
+      evRow(`<strong style="color:var(--gold)">Empate entre TERMINAR y CONTINUAR. El grupo vuelve a votar.</strong>`)
+    );
+
+    round++;
+  }
+}
+function buildFinalExecutionVotes(vList) {
+  let votes = {};
+  alive.forEach(p => votes[p] = 0);
+
+  const totalTie = Math.random() < 0.22;
+  const fourPersonDoubleTie = alive.length === 4 && !totalTie && Math.random() < 0.35;
+  let plan = null;
+
+  if (totalTie) {
+    plan = [...alive];
+  } else if (fourPersonDoubleTie) {
+    plan = shuffle([...alive]).slice(0, 2);
+  }
+
+  alive.forEach((voter, index) => {
+    let target;
+
+    if (plan) {
+      const options = plan.filter(p => p !== voter);
+      target = options.length ? options[index % options.length] : shuffle(alive.filter(p => p !== voter))[0];
+    } else {
+      let options = alive.filter(p => p !== voter);
+      const traitors = options.filter(p => roles[p] === "Traidor");
+      const innocents = options.filter(p => roles[p] !== "Traidor");
+      const targetPool = Math.random() < 0.5 && traitors.length ? traitors : (innocents.length ? innocents : options);
+      target = targetPool[Math.floor(Math.random() * targetPool.length)];
+    }
+
+    if (!target) return;
+    votes[target]++;
+    vList.appendChild(
+      evRow(`${chip(voter).outerHTML} <span class="txt">vota por</span> ${chip(target).outerHTML} <span class="txt">para ser ${gText(target, "ejecutado", "ejecutada")}.</span>`)
+    );
+  });
+
+  return votes;
+}
+
+function resolveFinalExecutionTie(votes) {
+  const entries = Object.entries(votes);
+  const maxVotes = Math.max(...entries.map(([, v]) => v));
+  const tied = entries.filter(([, v]) => v === maxVotes).map(([name]) => name);
+
+  if (tied.length === alive.length) return { type: "total", eliminated: [...alive] };
+  if (alive.length === 4 && tied.length === 2) return { type: "double", eliminated: tied };
+  return { type: "single", eliminated: [tied[Math.floor(Math.random() * tied.length)]] };
 }
 
 function runFinaleLogic() {
   const vList = $("#votingList");
   vList.innerHTML = "";
-  
+
   let p = shuffle(alive);
-  vList.appendChild(evRow(`${chip(p[0]).outerHTML} <span class="txt">dice que</span> ${chip(p[1]).outerHTML} <span class="txt">debió morir hace días.</span>`));
-  vList.appendChild(evRow(`${chip(p[2] || p[0]).outerHTML} <span class="txt">confiesa que ya no sabe en quién confiar.</span>`));
-  
-  let active_finale = [...alive];
-  let loopCount = 1;
-  let finalDecisionReached = false;
-  
-  while(active_finale.length > 2 && !finalDecisionReached) {
-    vList.appendChild(evRow(`<br><strong style="color:var(--gold); font-family:Cinzel;">--- RONDA ${loopCount} ---</strong>`));
-    
-    let votesEnd = 0; let votesCont = 0;
-    active_finale.forEach(voter => {
-      let choice = "";
-      if(roles[voter] === 'Traidor') { choice = "TERMINAR"; votesEnd++; }
-      else {
-        choice = Math.random() < 0.5 ? "TERMINAR" : "CONTINUAR";
-        if(choice === "TERMINAR") votesEnd++; else votesCont++;
+
+  if (p.length >= 2) {
+    vList.appendChild(
+      evRow(
+        `${chip(p[0]).outerHTML} <span class="txt">dice que</span> ${chip(p[1]).outerHTML} <span class="txt">debió llegar más lejos.</span>`
+      )
+    );
+  }
+
+  if (p.length >= 3) {
+    vList.appendChild(
+      evRow(
+        `${chip(p[2]).outerHTML} <span class="txt">ya no confía en nadie dentro de la mansión.</span>`
+      )
+    );
+  }
+
+  const startingFinalists = [...alive];
+  let resultText = "";
+  let resultColor = "";
+  let resultRoleText = "";
+  let finalResolved = false;
+
+  while (!finalResolved) {
+    const decision = decideEndOrContinue(vList);
+    const traitorsBeforeDecision = alive.filter(a => roles[a] === "Traidor");
+    const innocentsBeforeDecision = alive.filter(a => roles[a] !== "Traidor");
+
+    if (decision === "terminar") {
+      if (traitorsBeforeDecision.length > 0) {
+        resultText = "LOS TRAIDORES GANAN";
+        resultColor = "#ff4d4f";
+        resultRoleText = `${traitorsBeforeDecision.join(" y ")} ${traitorsBeforeDecision.length === 1 ? "gana" : "ganan"}. Quedaba al menos un traidor vivo.`;
+        markFinalWinners(traitorsBeforeDecision);
+        alive.filter(a => !traitorsBeforeDecision.includes(a)).forEach(a => {
+          trackData[a][episode - 1] = { cls: "run", txt: "Runner Up" };
+        });
+      } else {
+        resultText = "LOS INOCENTES GANAN";
+        resultColor = "var(--gold)";
+        resultRoleText = `${innocentsBeforeDecision.join(" y ")} ${innocentsBeforeDecision.length === 1 ? "gana" : "ganan"}. No quedaban traidores.`;
+        markFinalWinners(innocentsBeforeDecision);
       }
-      vList.appendChild(evRow(`${chip(voter).outerHTML} <span class="txt">vota por</span> <strong style="color:#fff">${choice}</strong> <span class="txt">el juicio.</span>`));
-    });
-    
-    if (votesEnd === votesCont) {
-        vList.appendChild(evRow(`<strong style="color:var(--gold)">¡EMPATE! Deben votar de nuevo.</strong>`));
-        loopCount++;
-        continue;
+
+      finalResolved = true;
+      break;
     }
 
-    if(votesEnd > votesCont) {
-      vList.appendChild(evRow(`<strong style="color:#ff4d4d">Mayoría para TERMINAR el juego.</strong>`));
-      finalDecisionReached = true;
-    } else {
-      vList.appendChild(evRow(`<strong style="color:#27c76f">Mayoría para CONTINUAR el juego. Se procede a votar.</strong>`));
-      
-let fVotes = {}; active_finale.forEach(a => fVotes[a] = 0);
+    vList.appendChild(evRow(`<strong style="color:var(--gold)">El grupo decide CONTINUAR. Hay una votación final de ejecución.</strong>`));
+    const votes = buildFinalExecutionVotes(vList);
+    const resolution = resolveFinalExecutionTie(votes);
+    const executed = resolution.eliminated;
 
-active_finale.forEach(voter => {
-  let targets = active_finale.filter(t => t !== voter);
-  let target = targets[Math.floor(Math.random() * targets.length)];
-  fVotes[target]++;
+    markFinalEliminated(executed);
+    alive = alive.filter(p => !executed.includes(p));
 
-  const row = evRow("");
+    if (resolution.type === "total") {
+      resultText = "NADIE GANA";
+      resultColor = "#ff4d4d";
+      resultRoleText = "Empate total: todos fueron eliminados.";
+      finalResolved = true;
+      break;
+    }
 
-  row.append(
-    chip(voter),
-    Object.assign(document.createElement("span"), { className: "txt", textContent: " vota por " }),
-    chip(target)
-  );
+    const traitorsLeft = alive.filter(a => roles[a] === "Traidor");
+    const innocentsLeft = alive.filter(a => roles[a] !== "Traidor");
+    const traitorWasExecuted = executed.some(a => roles[a] === "Traidor");
 
-  vList.appendChild(row);
-});
-      
-      let maxV = 0; let tie = [];
-      for(let a in fVotes) {
-        if(fVotes[a] > maxV) { maxV = fVotes[a]; tie = [a]; }
-        else if(fVotes[a] === maxV) { tie.push(a); }
+    if (traitorWasExecuted) {
+      resultText = "LOS INOCENTES GANAN";
+      resultColor = "var(--gold)";
+      resultRoleText = "El traidor fue ejecutado en el juicio final.";
+      markFinalWinners(innocentsLeft);
+      finalResolved = true;
+      break;
+    }
+
+    if (resolution.type === "double") {
+      if (traitorsLeft.length > 0) {
+        resultText = "EL TRAIDOR GANA";
+        resultColor = "#ff4d4f";
+        resultRoleText = `${traitorsLeft.join(" y ")} ${traitorsLeft.length === 1 ? "sobrevive" : "sobreviven"}. El traidor gana porque quedó vivo entre los dos finalistas.`;
+        markFinalWinners(traitorsLeft);
+        innocentsLeft.forEach(a => {
+          trackData[a][episode - 1] = { cls: "run", txt: "Runner Up" };
+        });
+      } else {
+        resultText = "LOS INOCENTES GANAN";
+        resultColor = "var(--gold)";
+        resultRoleText = `${innocentsLeft.join(" y ")} ganan. Los dos sobrevivientes son inocentes.`;
+        markFinalWinners(innocentsLeft);
       }
-      
-      if(active_finale.length === 3 && tie.length > 1) {
-         let brokenTie = tie[Math.floor(Math.random() * tie.length)];
-         tie = [brokenTie];
+
+      finalResolved = true;
+      break;
+    }
+
+    if (traitorsLeft.length === 0) {
+      if (alive.length <= 2) {
+        resultText = "LOS INOCENTES GANAN";
+        resultColor = "var(--gold)";
+        resultRoleText = `${innocentsLeft.join(" y ")} ${innocentsLeft.length === 1 ? "gana" : "ganan"}. No quedan traidores vivos.`;
+        markFinalWinners(innocentsLeft);
+        finalResolved = true;
+        break;
       }
-      
-      tie.forEach(elim => {
-        let elimText = gText(elim, "eliminado", "eliminada");
-        vList.appendChild(evRow(`<strong style="color:var(--gold)">${elim} ha sido ${elimText}. Era ${getRoleText(elim)}.</strong>`));
-        eliminated.push(elim);
-        elim_order.push({ name: elim, ep: episode, reason: 'ELIM' });
-        active_finale = active_finale.filter(a => a !== elim);
-        alive = alive.filter(a => a !== elim);
+
+      vList.appendChild(
+        evRow(`<strong style="color:var(--gold)">El jugador ejecutado era inocente. Los ${alive.length} inocentes sobrevivientes vuelven a decidir si TERMINAR o CONTINUAR.</strong>`)
+      );
+      continue;
+    }
+    if (alive.length <= 2) {
+      resultText = "EL TRAIDOR GANA";
+      resultColor = "#ff4d4f";
+      resultRoleText = `${traitorsLeft.join(" y ")} ${traitorsLeft.length === 1 ? "sobrevive" : "sobreviven"}. El traidor gana al llegar al juicio final sin ser ejecutado.`;
+      markFinalWinners(traitorsLeft);
+      innocentsLeft.forEach(a => {
+        trackData[a][episode - 1] = { cls: "run", txt: "Runner Up" };
       });
-      loopCount++;
+      finalResolved = true;
+      break;
     }
+
+    vList.appendChild(
+      evRow(`<strong style="color:var(--gold)">El jugador ejecutado era inocente. Los ${alive.length} sobrevivientes vuelven a decidir si TERMINAR o CONTINUAR.</strong>`)
+    );
   }
-  
-  let hasTraitor = active_finale.some(a => roles[a] === 'Traidor');
-  if(hasTraitor) {
-    $("#elimResultText").textContent = "LOS TRAIDORES GANAN";
-    $("#elimResultText").style.color = "#ff4d4d";
-    let trs = active_finale.filter(a => roles[a] === 'Traidor');
-    $("#elimRoleText").textContent = `${trs.join(" y ")} ha(n) ganado The Traitor.`;
-    active_finale.forEach(a => {
-      if(roles[a] === 'Traidor') trackData[a][episode-1] = { cls: 'champ', txt: 'WINNER' };
-      else trackData[a][episode-1] = { cls: 'run', txt: 'Runner Up' };
-    });
-  } else {
-    $("#elimResultText").textContent = "LOS INOCENTES GANAN";
-    $("#elimResultText").style.color = "var(--gold)";
-    $("#elimRoleText").textContent = `${active_finale.join(" y ")} ha(n) ganado The Traitor.`;
-    active_finale.forEach(a => {
-      trackData[a][episode-1] = { cls: 'champ', txt: 'WINNER' };
-    });
-  }
-  
-  eliminated.forEach(a => {
-    trackData[a][episode-1] = { cls: 'elim', txt: 'ELIMINATED' };
+
+  startingFinalists.forEach(name => {
+    if (!trackData[name][episode - 1]) {
+      trackData[name][episode - 1] = { cls: "run", txt: "Runner Up" };
+    }
   });
+
+  cast.forEach(name => {
+    if (!trackData[name][episode - 1]) {
+      trackData[name][episode - 1] = { cls: "grey", txt: "" };
+    }
+  });
+
+  $("#elimResultText").textContent = resultText;
+  $("#elimResultText").style.color = resultColor;
+  $("#elimRoleText").textContent = resultRoleText;
 }
+// limpieza final
+eliminated.forEach(a => {
+  trackData[a][episode-1] = { cls: 'elim', txt: 'ELIMINATED' };
+});
 
 $("#btnToTR").onclick = () => {
   if(!isFinale) populateTRForEpisode();
@@ -939,7 +1220,7 @@ $("#btnToTR").onclick = () => {
   
   // CORRECCIÓN 3: RECLUTAMIENTO FORZADO
   let aliveTraitors = alive.filter(a => roles[a] === 'Traidor');
-  if (aliveTraitors.length === 0 && alive.length > 0 && !isFinale) {
+  if (aliveTraitors.length === 0 && alive.length > 4 && !isFinale) {
       initNewTraitor();
       return;
   }
@@ -951,7 +1232,7 @@ $("#btnToTR").onclick = () => {
     $("#btnRestart").classList.remove("hide");
   } else {
     let aliveTraitors = alive.filter(a => roles[a] === 'Traidor');
-    if(aliveTraitors.length === 0) {
+    if(aliveTraitors.length === 0 && alive.length > 4) {
       $("#btnToStatus").textContent = "Reclutar Nuevo Traidor →";
       $("#btnToStatus").onclick = () => initNewTraitor();
     } else {
@@ -965,21 +1246,44 @@ $("#btnRestart").onclick = () => location.reload();
 
 function populateTRForEpisode() {
   cast.forEach(p => {
+    const special = elim_order.find(e => e.name === p && e.ep === episode && ["EVACUADO", "EXPULSADO", "RENUNCIA"].includes(e.reason));
     let td = { cls: 'safe', txt: 'SAFE' };
-    if(immune.includes(p)) td = { cls: 'win', txt: 'WIN' };
-    else if(eliminated.includes(p)) td = { cls: 'elim', txt: 'ELIM' };
-    else if(p === murdered) td = { cls: 'murd', txt: 'MURD' };
-    else if(btm_players.includes(p)) td = { cls: 'btm', txt: `BTM${btm_players.length+1}` }; 
-    else if(!alive.includes(p) && !eliminated.includes(p) && p !== murdered) td = { cls: 'grey', txt: '' }; 
-    else {
-      let r = Math.random();
-      if(r < 0.20) td = { cls: 'high', txt: 'HIGH' };
-      else if(r < 0.35) td = { cls: 'low', txt: 'LOW' };
+
+    if (special) {
+      if (special.reason === 'EVACUADO') td = { cls: 'evac', txt: 'EVAC' };
+      else if (special.reason === 'EXPULSADO') td = { cls: 'disq', txt: 'DISQ' };
+      else td = { cls: 'quit', txt: 'QUIT' };
     }
-    trackData[p][episode-1] = td;
+
+    else if (eliminated.includes(p)) {
+      td = { cls: 'elim', txt: 'ELIM' };
+    }
+
+    else if (p === murdered) {
+      td = { cls: 'murd', txt: 'MURD' };
+    }
+
+    else if (!alive.includes(p)) {
+      td = { cls: 'grey', txt: '' };
+    }
+
+    else if (immune.includes(p)) {
+      td = { cls: 'win', txt: 'WIN' };
+    }
+
+    else if (btm_players.includes(p)) {
+      td = { cls: 'btm', txt: `BTM${btm_count || btm_players.length}` };
+    }
+
+    if (td.txt === 'SAFE') {
+      let r = Math.random();
+      if (r < 0.20) td = { cls: 'high', txt: 'HIGH' };
+      else if (r < 0.35) td = { cls: 'low', txt: 'LOW' };
+    }
+
+    trackData[p][episode - 1] = td;
   });
 }
-
 function buildFinaleResults(sortedCast) {
   const box = $("#finaleResultsBox");
   box.innerHTML = `<h2 class="gold-emboss" style="text-align:center; margin-bottom:16px;">RESULTADOS</h2>`;
@@ -998,8 +1302,8 @@ function buildFinaleResults(sortedCast) {
       const o = document.createElement("div"); o.className = "res-outcome";
       let outcome = "";
       let td = trackData[p][episode-1];
-      if(td && td.cls === 'champ') outcome = `Escapó en la Noche ${episode}`;
-      else if (td && td.cls === 'run') outcome = gText(p, `Ejecutado en la Noche ${episode}`, `Ejecutada en la Noche ${episode}`); 
+      if(td && td.cls === 'champ') outcome = `Ganador de la Final`;
+      else if (td && td.cls === 'run') outcome = `Finalista`; 
       else {
           let el = elim_order.find(e => e.name === p);
           if(el) {
@@ -1016,6 +1320,7 @@ function buildFinaleResults(sortedCast) {
   box.appendChild(grid);
   box.classList.remove("hide");
 }
+
 
 function buildTR() {
   const head = $("#trkHead"); const body = $("#trkBody");
